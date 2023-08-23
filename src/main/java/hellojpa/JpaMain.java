@@ -1,4 +1,4 @@
-package org.example;
+package hellojpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -6,7 +6,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class Main {
+public class JpaMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
 
@@ -17,18 +17,22 @@ public class Main {
 
         try {
 
-            Member member1 = new Member();
-            member1.setUsername("A");
+            //저장
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            Member member = new Member();
+            member.setUsername("member1");
+            em.persist(member);
 
-            Member member3 = new Member();
-            member3.setUsername("V");
+            team.addMember(member);
 
-            em.persist(member1); //1, 51
-            em.persist(member2); //MEM
-            em.persist(member3); //MEM
+            em.flush();
+            em.clear();
+
+            Team findTeam = em.find(Team.class, team.getId());
+            List<Member> members = findTeam.getMembers();
 
             tx.commit();
         } catch (Exception e) {
